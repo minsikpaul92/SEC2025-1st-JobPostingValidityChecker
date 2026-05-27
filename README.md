@@ -9,157 +9,157 @@
 ## 👥 Team Members & Contributions
 
 ### Minsik Kim — Backend · Scikit-learn · ML Logic
-- FastAPI 백엔드 서버 설계 및 구현 (`backend/main.py`, `backend/models.py`)
-- 하이브리드 규칙 기반 + 머신러닝 텍스트 분류기 개발 (`model_textbase/classify_posting.py`, `backend/textbase_classifier_loader.py`)
-- Scikit-learn 기반 LogisticRegression 모델 학습 및 저장 (`textbase_classifier.pkl`)
-- RandomForest 투명성 점수 모델 개발 (`models_ml/models.py`, `transparency_model.pkl`)
-- TF-IDF + 수치 피처 엔지니어링, 온타리오 2026 규정 기반 규칙 설계
-- 필드 유효성 검증 유틸리티 개발 (`models_ml/models_field_base.py`)
+- Designed and implemented the FastAPI backend server (`backend/main.py`, `backend/models.py`)
+- Built the hybrid rule-based + machine learning text classifier (`model_textbase/classify_posting.py`, `backend/textbase_classifier_loader.py`)
+- Trained and serialized a Scikit-learn LogisticRegression model (`textbase_classifier.pkl`)
+- Developed the RandomForest transparency scoring model (`models_ml/models.py`, `transparency_model.pkl`)
+- Engineered TF-IDF + numeric features and designed Ontario 2026 compliance rules
+- Implemented field validation utility (`models_ml/models_field_base.py`)
 
 ### Tan Dat — Frontend · Docker · Deployment
-- React + Vite 프론트엔드 프로젝트 구성 및 백엔드 API 연동
-- 폼(Form) 기반 검증 컴포넌트 구현 (`frontend/src/components/form/form.tsx`)
-- 텍스트 입력 기반 검증 컴포넌트 구현 (`frontend/src/components/text-area/text-area.tsx`)
-- Docker 컨테이너 설정: `backend/Dockerfile`, `frontend/Dockerfile`
-- Docker Compose 멀티 서비스 오케스트레이션 (`docker-compose.yml`)
-- 개발 환경 및 배포 파이프라인 구성
+- Set up the React + Vite frontend project and integrated backend APIs
+- Implemented the form-based validation component (`frontend/src/components/form/form.tsx`)
+- Implemented the text-area validation component (`frontend/src/components/text-area/text-area.tsx`)
+- Configured Docker containers: `backend/Dockerfile`, `frontend/Dockerfile`
+- Set up Docker Compose multi-service orchestration (`docker-compose.yml`)
+- Configured the development environment and deployment pipeline
 
 ### Khai Ngo — Frontend · UI/UX
-- 전체 UI/UX 디자인 및 사용자 경험 설계
-- 결과 표시 컴포넌트 구현 (`frontend/src/components/result/result.tsx`)
-- 헤더 컴포넌트 및 탭 인터페이스 구현 (`frontend/src/components/header/header.tsx`)
-- shadcn/ui + Tailwind CSS 기반 컴포넌트 시스템 구성
-- 검증 결과 시각화 (신뢰도, 투명성 점수, 누락 필드 표시)
-- 반응형 레이아웃 및 색상 코딩 (VALID/INVALID 상태 구분)
+- Designed the overall UI/UX and user experience flow
+- Implemented the result display component (`frontend/src/components/result/result.tsx`)
+- Implemented the header component and tabbed interface (`frontend/src/components/header/header.tsx`)
+- Built the component system using shadcn/ui + Tailwind CSS
+- Created validation result visualizations (confidence, transparency score, missing fields)
+- Designed responsive layout and color-coded VALID/INVALID status indicators
 
 ---
 
-## 📌 프로젝트 개요
+## 📌 Project Overview
 
-온타리오주 2026년 구인공고 투명성 요건(Working for Workers Four Act, 2024)에 따라 구인공고의 적법성을 자동으로 검증하는 웹 애플리케이션입니다.
+A web application that automatically validates job postings against Ontario's 2026 Job Posting Transparency requirements (Working for Workers Four Act, 2024).
 
-### 주요 기능
-- **Form 기반 검증**: 9개 필드를 직접 입력하여 검증
-- **텍스트 기반 검증**: 구인공고 원문을 붙여넣어 규칙 + ML 모델로 분석
-- **투명성 점수**: RandomForest 모델이 공고의 투명성 수준을 0~100%로 평가
-- **위반 항목 안내**: 누락 필드 및 규정 위반 이유를 명시
+### Key Features
+- **Form-based validation**: Validate by filling in 9 structured fields
+- **Text-based validation**: Paste raw posting text for rule + ML analysis
+- **Transparency score**: RandomForest model evaluates posting transparency from 0–100%
+- **Violation details**: Clearly lists missing fields and reasons for non-compliance
 
 ---
 
-## 🏗️ 시스템 아키텍처
+## 🏗️ System Architecture
 
 ```
 User Interface (React + Vite + Tailwind)
-  ├── Form Tab → 9개 필드 입력 → POST /jobs-postings/field-base
-  └── Text Box Tab → 원문 텍스트 → POST /jobs-postings/text-base
-              ↓
-      FastAPI Backend (backend/main.py)
-          ├── /field-base: 누락 필드 체크 + RF 투명성 점수
-          └── /text-base: 규칙 기반 검사 + LogisticRegression 분류
-              ↓
-      Result Display (result.tsx)
-          ├── 분류 결과 (VALID / INVALID)
-          ├── 신뢰도 (%)
-          ├── 투명성 점수 (%)
-          └── 누락 필드 목록
+  ├── Form Tab   → fill 9 fields       → POST /jobs-postings/field-base
+  └── Text Tab   → paste raw text      → POST /jobs-postings/text-base
+                          ↓
+              FastAPI Backend (backend/main.py)
+                  ├── /field-base: missing field check + RF transparency score
+                  └── /text-base:  rule-based check + LogisticRegression classification
+                          ↓
+              Result Display (result.tsx)
+                  ├── Classification (VALID / INVALID)
+                  ├── Confidence (%)
+                  ├── Transparency Score (%)
+                  └── Missing Fields list
 ```
 
 ---
 
-## 📁 프로젝트 구조
+## 📁 Project Structure
 
 ```
 SEC2025-1st-JobPostingValidityChecker/
-├── backend/                          # FastAPI 백엔드 서비스
-│   ├── main.py                       # API 엔드포인트 (3개)
-│   ├── models.py                     # Pydantic 데이터 모델
-│   ├── textbase_classifier_loader.py # 텍스트 분류기 로더 + 규칙 추출
-│   ├── textbase_classifier.pkl       # 학습된 LogisticRegression 모델
-│   ├── transparency_model.pkl        # 학습된 RandomForest 투명성 모델
-│   ├── requirements.txt              # 백엔드 의존성
-│   └── Dockerfile                    # 백엔드 Docker 설정
+├── backend/                          # FastAPI backend service
+│   ├── main.py                       # API endpoints (3 routes)
+│   ├── models.py                     # Pydantic data models
+│   ├── textbase_classifier_loader.py # Text classifier loader + rule extraction
+│   ├── textbase_classifier.pkl       # Trained LogisticRegression model
+│   ├── transparency_model.pkl        # Trained RandomForest transparency model
+│   ├── requirements.txt              # Backend dependencies
+│   └── Dockerfile                    # Docker config for backend
 ├── frontend/                         # React + Vite + Tailwind UI
 │   ├── src/
-│   │   ├── App.tsx                   # 루트 컴포넌트 (탭 인터페이스)
+│   │   ├── App.tsx                   # Root component with tabbed interface
 │   │   ├── components/
-│   │   │   ├── form/form.tsx         # 폼 기반 검증 입력
-│   │   │   ├── text-area/text-area.tsx # 텍스트 기반 검증 입력
-│   │   │   ├── result/result.tsx     # 결과 표시 컴포넌트
-│   │   │   ├── header/header.tsx     # 헤더 (캐나다 국기 포함)
-│   │   │   └── ui/                   # shadcn/ui 공용 컴포넌트
+│   │   │   ├── form/form.tsx         # Form-based validation input
+│   │   │   ├── text-area/text-area.tsx # Text-based validation input
+│   │   │   ├── result/result.tsx     # Result display component
+│   │   │   ├── header/header.tsx     # Header with Canada flag
+│   │   │   └── ui/                   # Shared shadcn/ui components
 │   │   └── lib/
-│   │       ├── validation.ts         # ValidationResult 타입 정의
-│   │       └── utils.ts              # 유틸리티 함수
+│   │       ├── validation.ts         # ValidationResult type definition
+│   │       └── utils.ts              # Utility functions
 │   ├── package.json
 │   ├── vite.config.ts
 │   ├── tsconfig.json
-│   ├── Dockerfile                    # 프론트엔드 Docker 설정
+│   ├── Dockerfile                    # Docker config for frontend
 │   └── index.html
-├── model_textbase/                   # 규칙 우선 텍스트 분류기
-│   ├── classify_posting.py           # PostingClassifier 클래스
-│   ├── textbase_classifier.pkl       # 사전 학습 모델
+├── model_textbase/                   # Rule-first text classifier
+│   ├── classify_posting.py           # PostingClassifier class (rule + LR hybrid)
+│   ├── textbase_classifier.pkl       # Pre-trained model
 │   └── dataset/
-│       ├── job_postings_dataset.csv  # 구조화된 데이터셋
-│       ├── raw_postings/             # 유효/무효 샘플 공고 (각 10개)
-│       └── test_postings/            # 테스트용 공고 (10개)
-├── models_ml/                        # ML 투명성 점수 실험
-│   ├── models.py                     # RandomForest 투명성 모델 학습
-│   ├── models_field_base.py          # 필드 유효성 검증 유틸리티
-│   └── transparency_model.pkl        # 학습된 RF 모델
-├── dataset/                          # 공유 데이터 참조
-├── docker-compose.yml                # 멀티 컨테이너 오케스트레이션
+│       ├── job_postings_dataset.csv  # Structured dataset
+│       ├── raw_postings/             # 10 valid + 10 invalid sample postings
+│       └── test_postings/            # 10 test postings for interactive testing
+├── models_ml/                        # ML transparency scoring experiments
+│   ├── models.py                     # RandomForest transparency model training
+│   ├── models_field_base.py          # Field validation utility
+│   └── transparency_model.pkl        # Trained RandomForest model
+├── dataset/                          # Shared data reference
+├── docker-compose.yml                # Multi-container orchestration
 └── README.md
 ```
 
 ---
 
-## 🔑 핵심 기술 구현
+## 🔑 Key Technical Implementations
 
-### 1. 하이브리드 규칙 + ML 모델 (`model_textbase/classify_posting.py`)
-- **하드 규칙 우선**: 필수 필드 누락, 급여 범위 초과($50k 이상 폭), AI 미공개, 캐나다 경력 요구 등은 즉시 `INVALID` 판정
-- **ML 폴백**: 규칙 위반 없을 경우 규칙 파생 피처로 `LogisticRegression` 분류
-- 위반 이유를 구체적으로 반환
+### 1. Hybrid Rule + ML Model (`model_textbase/classify_posting.py`)
+- **Hard rules first**: Missing required fields, salary range width over $50k, undisclosed AI use, explicit Canadian-experience requirements all force an `INVALID` result immediately
+- **ML fallback**: If no hard rules are violated, a balanced `LogisticRegression` trained on rule-derived features makes the final classification
+- Returns specific violation reasons for each failed check
 
-### 2. 백엔드 엔드포인트 (`backend/main.py`)
-| 엔드포인트 | 메서드 | 설명 |
+### 2. Backend Endpoints (`backend/main.py`)
+| Endpoint | Method | Description |
 |---|---|---|
-| `/jobs-postings/` | GET | 샘플 공고 텍스트 목록 반환 |
-| `/jobs-postings/text-base` | POST | 원문 텍스트 분류 (규칙 + LogisticRegression) |
-| `/jobs-postings/field-base` | POST | 필드 검증 + RF 투명성 점수 |
+| `/jobs-postings/` | GET | Returns sample posting texts grouped by filename |
+| `/jobs-postings/text-base` | POST | Classifies raw text (rules + LogisticRegression) |
+| `/jobs-postings/field-base` | POST | Validates fields + computes RF transparency score |
 
-### 3. ML 투명성 모델 (`models_ml/models.py`)
-- TF-IDF (100 피처) + 수치 피처(필드 완성도, 고용 형태, AI 공개 여부, 급여 존재)
-- RandomForest 분류기로 투명성 라벨 예측 (1 = 모든 필드 존재, 0 = 누락 있음)
-- 70/30 학습/평가 분할
+### 3. ML Transparency Model (`models_ml/models.py`)
+- TF-IDF (100 features) + numeric features (field completeness, employment type, AI disclosure, salary presence)
+- RandomForest classifier predicts transparency label (1 = all fields present, 0 = fields missing)
+- 70/30 train/evaluation split; saved as `transparency_model.pkl`
 
-### 4. 프론트엔드 (`frontend/src/`)
-- React 19 + TypeScript + Tailwind CSS + shadcn/ui
-- Form 탭: 9개 필드 폼 입력 (title, salary, location, employer, description, requirements, benefits, employment_type, ai_used)
-- Text Box 탭: 원문 붙여넣기
-- 결과: 분류(VALID/INVALID), 신뢰도, 투명성 점수, 누락 필드 색상 코딩 표시
+### 4. Frontend (`frontend/src/`)
+- React 19 + TypeScript + Tailwind CSS 4 + shadcn/ui
+- **Form tab**: 9-field input (title, salary, location, employer, description, requirements, benefits, employment_type, ai_used)
+- **Text tab**: Paste raw posting text for instant analysis
+- **Results**: VALID/INVALID badge, confidence %, transparency score %, color-coded missing field list
 
 ---
 
-## 🚀 실행 방법
+## 🚀 How to Run
 
-### 방법 1: Docker Compose (권장)
+### Option 1: Docker Compose (Recommended)
 
 ```bash
 docker compose up --build
 ```
 
-- 프론트엔드: http://localhost:5173
-- 백엔드: http://localhost:8000
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8000
 
 ---
 
-### 방법 2: 수동 실행
+### Option 2: Manual Setup
 
-#### 사전 조건
+#### Prerequisites
 - Python 3.11+
 - Node.js 18+
 
-#### 백엔드 (FastAPI)
+#### Backend (FastAPI)
 ```bash
 cd backend
 python3 -m venv venv
@@ -169,7 +169,7 @@ uvicorn main:app --reload
 # → http://localhost:8000
 ```
 
-#### 프론트엔드 (React + Vite)
+#### Frontend (React + Vite)
 ```bash
 cd frontend
 npm install
@@ -177,71 +177,76 @@ npm run dev
 # → http://localhost:5173
 ```
 
-#### 텍스트 분류기 (단독 실행)
+#### Text Classifier (standalone)
 ```bash
 cd model_textbase
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python classify_posting.py
-# → 테스트 인덱스(1-10) 또는 .txt 파일 경로 입력
+# → Enter a test index (1–10) or path to any .txt file
 ```
 
-#### ML 투명성 모델 학습
+#### Train ML Transparency Model
 ```bash
 cd models_ml
 python3 -m venv venv
 source venv/bin/activate
 pip install scikit-learn pandas numpy scipy
-python models.py             # RF 학습 + transparency_model.pkl 저장
-python models_field_base.py  # CSV 데이터셋 필드 유효성 검증
+python models.py             # trains RandomForest, saves transparency_model.pkl
+python models_field_base.py  # validates required fields across the CSV dataset
 ```
 
 ---
 
-## 🛠️ 기술 스택
+## 🛠️ Tech Stack
 
-| 영역 | 기술 |
+| Area | Technologies |
 |---|---|
-| 백엔드 | Python 3.11, FastAPI, uvicorn |
-| ML / 데이터 | scikit-learn, pandas, numpy |
-| 프론트엔드 | React 19, TypeScript, Vite |
+| Backend | Python 3.11, FastAPI, uvicorn |
+| ML / Data | scikit-learn, pandas, numpy |
+| Frontend | React 19, TypeScript, Vite |
 | UI | Tailwind CSS 4, shadcn/ui, Radix UI, Lucide React |
-| 컨테이너 | Docker, Docker Compose |
+| Containers | Docker, Docker Compose |
 
 ---
 
-## 🤖 AI 사용 및 출처 공개
+## 🤖 AI Usage & Citation Statement
 
-### 사용한 AI 도구
-- **OpenAI ChatGPT**: 코드 리팩토링, 로직 트러블슈팅, 문서 초안 작성, 정규식 패턴 개선
-- **GitHub Copilot**: `backend/main.py`의 파일 목록 헬퍼 메서드 일부 보조
+### AI Tools Used
+This project used **OpenAI ChatGPT** and **GitHub Copilot** to support development tasks such as code refactoring, feature brainstorming, logic troubleshooting, debugging assistance, and documentation drafting. All AI-generated suggestions were manually reviewed, validated, and integrated by the development team.
 
-### AI 활용 목적
-- 개발 효율 향상 및 대안적 접근법 탐색
-- 온타리오 2026 요건 기반 규칙 피처 브레인스토밍
-- 하이브리드 규칙+회귀 모델 로직 및 흐름 개선
-- `classify_posting.py` 초기 버전 이슈 식별
-- 급여 범위 및 필수 필드 추출 정규식 패턴 개선
-- 테스트 케이스 엣지 케이스 제안
+### Purpose of AI Assistance
+AI tools were used to:
+- Improve development efficiency and explore alternative solution approaches
+- Brainstorm rule-based features aligned with Ontario's 2026 Job Posting Transparency requirements
+- Refine the logic and flow of the hybrid rule–plus–logistic-regression model
+- Identify issues in early iterations of `classify_posting.py`
+- Enhance regex patterns for extracting salary ranges and required fields
+- Produce and revise explanatory documentation (README sections, comments)
+- Clarify edge cases and suggest additional test cases for `dataset/test_postings/`
 
-### 인간 감독 (Human Oversight)
-모든 코드, 로직, 모델 동작은 codeXperts 팀이 직접 작성·검증·테스트했습니다.  
-AI 지원은 선택적 입력으로만 활용되었으며, 모든 출력은 통합 전 대폭 수정되었습니다.  
-완전히 AI가 생성한 코드 모듈은 사용되지 않았습니다.
+### Human Oversight
+All code, logic, and model behavior were written, validated, and tested by the codeXperts team.
+AI assistance was treated strictly as optional input, and all outputs were significantly edited before integration.
+No fully-generated code modules were used.
 
-### 규정 준수 공개
-Working for Workers Four Act, 2024 (S.O. 2024, c.3 – Bill 149)에 따라 AI 사용을 전면 공개합니다.  
-AI 도구는 개발 및 문서화 단계에서만 사용되었으며, 구인공고 평가 워크플로우 내 자동화된 의사결정에는 참여하지 않습니다.
+### Specific AI Usage Notes
+- **ChatGPT** assisted with conceptual explanations, reasoning tasks, and iterative improvement of transparency-validation logic.
+- **GitHub Copilot** assisted minimally, specifically with a helper method in `backend/main.py` to list posting files (documented in-code).
+
+### Compliance Disclosure
+In accordance with the **Working for Workers Four Act, 2024 (S.O. 2024, c.3 – Bill 149)**, this project fully discloses the use of AI in its development.
+AI tools were used only during development and documentation. They do not participate in automated decision-making within the job-posting evaluation workflow.
 
 ---
 
-## 📚 참고 문헌
+## 📚 References
 
 - Working for Workers Four Act, 2024 (S.O. 2024, c.3 – Bill 149)
-- SEC 2025 – Problem Brief: 투명성 요건, 필수 필드, 준수 기대치 정의
-- SEC 2025 – Opening Briefing: 시스템 과제, 기대치, 챌린지 컨텍스트
-- SEC 2025 – FAQ & Rules: 심사 기준, 허용 도구, AI 사용 공개 요건
-- SEC 2025 Job Postings Dataset (`dataset/`)
-- Python 라이브러리: scikit-learn, numpy, pandas, FastAPI, uvicorn
-- Frontend 라이브러리: React, Vite, Tailwind CSS, shadcn/ui
+- SEC 2025 – Problem Brief: Defines transparency requirements, required posting fields, and compliance expectations
+- SEC 2025 – Opening Briefing: System tasks, expectations, and challenge context
+- SEC 2025 – FAQ & Rules: Judging criteria, allowed tools, and AI-usage disclosure requirements
+- SEC 2025 Job Postings Dataset (`dataset/job_postings_dataset.csv`, `dataset/raw_postings/`, `dataset/test_postings/`)
+- Python libraries: scikit-learn, numpy, pandas, FastAPI, uvicorn
+- Frontend libraries: React, Vite, Tailwind CSS, shadcn/ui
